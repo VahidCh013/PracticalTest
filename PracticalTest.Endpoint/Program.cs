@@ -1,9 +1,11 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using PracticalTest.Domain.Read.Users;
+using PracticalTest.Domain.Write.Common.Mediator;
 using PracticalTest.Infrastructure;
 using PracticalTest.Infrastructure.Read;
 using PracticalTest.Infrastructure.Read.Repositories;
@@ -42,13 +44,18 @@ builder.Services.AddScoped<DbContextFactory<PracticalTestWriteDbContext>>();
 builder.Services.AddScoped<DbContextFactory<PracticalTestReadDbContext>>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+
+builder.Services.AddMediator(
+    Assembly.GetAssembly(typeof(PracticalTestWriteDbContext)));
+
+
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     using (var writeDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestWriteDbContext>>().CreateDbContext())
         writeDb.Database.Migrate();
     using (var readDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestReadDbContext>>().CreateDbContext())
-        readDb.Database.Migrate();
+         readDb.Database.Migrate();
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {

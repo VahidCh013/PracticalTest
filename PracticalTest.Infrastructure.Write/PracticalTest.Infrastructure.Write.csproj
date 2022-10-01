@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="MediatR" Version="9.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.9" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
@@ -18,5 +19,11 @@
       <ProjectReference Include="..\PracticalTest.Domain.Read\PracticalTest.Domain.Read.csproj" />
       <ProjectReference Include="..\PracticalTest.Domain.Write\PracticalTest.Domain.Write.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Configurations" />
+    </ItemGroup>
+
+
 
 </Project>
