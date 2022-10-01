@@ -11,14 +11,16 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9" />
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.23.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.23.1" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PracticalTest.Domain.Read\PracticalTest.Domain.Read.csproj" />
       <ProjectReference Include="..\PracticalTest.Domain.Write\PracticalTest.Domain.Write.csproj" />
+      <ProjectReference Include="..\PracticalTest.Infrastructure.Read\PracticalTest.Infrastructure.Read.csproj" />
       <ProjectReference Include="..\PracticalTest.Infrastructure.Write\PracticalTest.Infrastructure.Write.csproj" />
     </ItemGroup>
 

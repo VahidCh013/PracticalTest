@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PracticalTest.Domain.Write.Users;
+using PracticalTest.Domain.Read.Users;
 
-namespace PracticalTest.Infrastructure.Configurations.Users;
+namespace PracticalTest.Infrastructure.Read.Configurations.Users;
 
 public class UserConfiguration:IEntityTypeConfiguration<User>
 {

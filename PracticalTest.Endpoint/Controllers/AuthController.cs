@@ -1,12 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
+
 using System.Text;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PracticalTest.Domain.Write.Interfaces;
+using PracticalTest.Domain.Read.Users;
+
 using PracticalTest.Domain.Write.Users;
 
 namespace PracticalTest.Endpoint.Controllers;
@@ -16,25 +17,26 @@ namespace PracticalTest.Endpoint.Controllers;
 [AllowAnonymous]
 public class AuthController:ControllerBase
 {
-    private readonly IUserRepository _userRepository;
+   
     private readonly IConfiguration _config;
-    public AuthController(IConfiguration config, IUserRepository userRepository)
+    public AuthController(IConfiguration config)
     {
         _config = config;
-        _userRepository = userRepository;
+     
     }
 
     [HttpPost]
     [Route("AccessToken")]
     public async Task<IActionResult> AccessToken([FromBody] LoginCredential? credential)
     {
-        var user = await _userRepository.FindUserByEmail(credential.Email,credential.Password);
-        if (user is null)
-        {
-            return new BadRequestObjectResult(new { Message = "Login Failed" });
-        }
-        var accessToken = GenerateToken(user);
-        return Ok(new { AccessToken = accessToken });
+        // var user = await _userRepository.FindUserByEmail(credential.Email,credential.Password);
+        // if (user is null)
+        // {
+        //     return new BadRequestObjectResult(new { Message = "Login Failed" });
+        // }
+        // var accessToken = GenerateToken(user);
+        // return Ok(new { AccessToken = accessToken });
+        return Ok();
     }
     
     

@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using PracticalTest.Domain.Write.Interfaces;
+
 using PracticalTest.Infrastructure;
+using PracticalTest.Infrastructure.Read;
 using PracticalTest.Infrastructure.Repositories.UserRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var appConfiguration = builder.Configuration;
-builder.Services.AddDependencies(appConfiguration);
+builder.Services.AddReadDependencies(appConfiguration);
+builder.Services.AddWriteDependencies(appConfiguration);
 
 
 //JWT Authentication
@@ -37,13 +39,15 @@ builder.Services.AddAuthorization();
 
 //Register
 builder.Services.AddScoped<DbContextFactory<PracticalTestWriteDbContext>>();
-builder.Services.AddTransient<IUserRepository, UserRepository>();
+
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
-    var _dbContext = scope.ServiceProvider.GetRequiredService<PracticalTestWriteDbContext>();
-    _dbContext.Database.Migrate();
+    using (var writeDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestWriteDbContext>>().CreateDbContext())
+        writeDb.Database.Migrate();
+    using (var readDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestReadDbContext>>().CreateDbContext())
+        readDb.Database.Migrate();
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {

@@ -1,4 +1,4 @@
-﻿namespace PracticalTest.Domain.Write.Users;
+﻿namespace PracticalTest.Domain.Read.Users;
 
 /// <summary>
 /// Anemic model, this model does not have any complex use case.

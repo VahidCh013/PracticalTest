@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace PracticalTest.Infrastructure;
+namespace PracticalTest.Infrastructure.Read;
 
 public static class StartupExtension
 {
-    public static IServiceCollection AddWriteDependencies(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddReadDependencies(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContextFactory<PracticalTestWriteDbContext>(    (provider, options) => SetUpWriteContext(configuration,  options, provider)
+        services.AddDbContextFactory<PracticalTestReadDbContext>(    (provider, options) => SetUpWriteContext(configuration,  options, provider)
         );
         return services;
     }
@@ -20,11 +20,10 @@ public static class StartupExtension
             .UseSqlServer(configuration.GetConnectionString("PracticalTestConnection"),
                 b =>
                 {
-                    b.MigrationsAssembly("PracticalTest.Infrastructure.Write");
-                    b.MigrationsHistoryTable("__PTWriteContextMigrationHistory",
-                        "dbo");
+                    b.MigrationsAssembly("PracticalTest.Infrastructure.Read");
+                    b.MigrationsHistoryTable("__PTReadContextMigrationHistory",
+                        "read");
                 })
-            .UseLazyLoadingProxies()
             .EnableDetailedErrors();
 
         //This option only should be enabled in Development environment
