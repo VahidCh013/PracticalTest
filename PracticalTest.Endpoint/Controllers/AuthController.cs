@@ -17,25 +17,25 @@ namespace PracticalTest.Endpoint.Controllers;
 [AllowAnonymous]
 public class AuthController:ControllerBase
 {
-   
+    private readonly IUserRepository _userRepository;
     private readonly IConfiguration _config;
-    public AuthController(IConfiguration config)
+    public AuthController(IConfiguration config, IUserRepository userRepository)
     {
         _config = config;
-     
+        _userRepository = userRepository;
     }
 
     [HttpPost]
     [Route("AccessToken")]
     public async Task<IActionResult> AccessToken([FromBody] LoginCredential? credential)
     {
-        // var user = await _userRepository.FindUserByEmail(credential.Email,credential.Password);
-        // if (user is null)
-        // {
-        //     return new BadRequestObjectResult(new { Message = "Login Failed" });
-        // }
-        // var accessToken = GenerateToken(user);
-        // return Ok(new { AccessToken = accessToken });
+        var user = await _userRepository.FindUserByEmail(credential.Email,credential.Password);
+        if (user is null)
+        {
+            return new BadRequestObjectResult(new { Message = "Login Failed" });
+        }
+        var accessToken = GenerateToken(user);
+        return Ok(new { AccessToken = accessToken });
         return Ok();
     }
     
