@@ -13,7 +13,6 @@ public class Blog : AggregateEntity,ITimeAudit
     public Name Name { get;}
     public string Description { get; }
 
-    
     public virtual User User { get;  }
 
 
@@ -29,7 +28,7 @@ public class Blog : AggregateEntity,ITimeAudit
         User = user;
     }
 
-    private List<BlogPost> BlogPosts => _blogPosts;
+    public virtual List<BlogPost> BlogPosts => _blogPosts;
     public DateTimeOffset CreatedOn { get; }
     public string CreatedBy { get; }
     public DateTimeOffset ModifiedOn { get; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PracticalTest.Infrastructure;
 
@@ -11,9 +12,10 @@ using PracticalTest.Infrastructure;
 namespace PracticalTest.Infrastructure.Migrations
 {
     [DbContext(typeof(PracticalTestWriteDbContext))]
-    partial class PracticalTestWriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221001172832_AddTags")]
+    partial class AddTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,43 +110,6 @@ namespace PracticalTest.Infrastructure.Migrations
                     b.ToTable("BlogPost", "dbo");
                 });
 
-            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Comment", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<long?>("BlogPostId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Content")
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<DateTimeOffset>("ModifiedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetimeoffset")
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<long?>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BlogPostId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments", "dbo");
-                });
-
             modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Tag", b =>
                 {
                     b.Property<long>("Id")
@@ -232,27 +197,9 @@ namespace PracticalTest.Infrastructure.Migrations
                         .HasForeignKey("BlogId");
                 });
 
-            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Comment", b =>
-                {
-                    b.HasOne("PracticalTest.Domain.Write.Blogs.BlogPost", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("BlogPostId");
-
-                    b.HasOne("PracticalTest.Domain.Write.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Blog", b =>
                 {
                     b.Navigation("BlogPosts");
-                });
-
-            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.BlogPost", b =>
-                {
-                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("PracticalTest.Domain.Write.Users.User", b =>

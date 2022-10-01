@@ -18,8 +18,6 @@ public static class TimeAuditExtenstion
         where TEntityBase : EntityBase, ITimeAudit
     {
         builder.Property(x => x.CreatedOn).IsRequired().HasDefaultValueSql("getutcdate()");
-        builder.Ignore(x => x.CreatedBy);
         builder.Property(x => x.ModifiedOn).IsRequired().HasDefaultValueSql("getutcdate()");
-        builder.Ignore(x => x.ModifiedBy);
     }
 }

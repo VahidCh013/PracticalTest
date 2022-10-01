@@ -26,5 +26,7 @@ public class BlogConfiguration:IEntityTypeConfiguration<Blog>
         builder.HasOne(x => x.User)
             .WithMany(x => x.Blogs);
 
+        builder.HasMany(x => x.BlogPosts)
+            .WithOne();
     }
 }
