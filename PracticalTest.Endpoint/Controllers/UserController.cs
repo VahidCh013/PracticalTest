@@ -8,9 +8,9 @@ namespace PracticalTest.Endpoint.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    //For admin Only
+
     [HttpGet]
-    [Route("Admins")]
+    [Route("StandardUser")]
     [Authorize(Roles = "StandardUser")]
     public IActionResult AdminEndPoint()
     {

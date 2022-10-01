@@ -1,12 +1,14 @@
 ﻿using System.Reflection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
+using PracticalTest.Domain.Write.Users;
 
 namespace PracticalTest.Infrastructure;
 
-public class PracticalTestWriteDbContext:IdentityDbContext<IdentityUser>
+public class PracticalTestWriteDbContext:DbContext
 {
+
+    public DbSet<User> Users { get; set; }
     public PracticalTestWriteDbContext(DbContextOptions<PracticalTestWriteDbContext> options):base(options)
     {
         

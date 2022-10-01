@@ -2,7 +2,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+using PracticalTest.Domain.Write.Interfaces;
 using PracticalTest.Infrastructure;
+using PracticalTest.Infrastructure.Repositories.UserRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -28,13 +32,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-     .AddEntityFrameworkStores<PracticalTestWriteDbContext>()
-     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
 
+//Register
+builder.Services.AddScoped<DbContextFactory<PracticalTestWriteDbContext>>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var _dbContext = scope.ServiceProvider.GetRequiredService<PracticalTestWriteDbContext>();
+    _dbContext.Database.Migrate();
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
