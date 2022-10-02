@@ -1,4 +1,5 @@
-﻿using PracticalTest.Domain.Write.Common;
+﻿using CSharpFunctionalExtensions;
+using PracticalTest.Domain.Write.Common;
 using PracticalTest.Domain.Write.Users;
 
 namespace PracticalTest.Domain.Write.Blogs;
@@ -14,17 +15,19 @@ public class Comment:EntityBase,ITimeAudit
     public string Content { get; }
     public virtual User User { get; }
     
-    public virtual BlogPost BlogPost { get; }
 
-    private Comment(User user, BlogPost blogPost,string content)
+    private Comment(string content,User user)
     {
         User = user;
-        BlogPost = blogPost;
         Content = content;
     }
 
-    private Comment()
+    protected Comment()
     {
         
     }
+    
+    public static Result<Comment> Create(string content,User user)
+        =>Result.FailureIf( string.IsNullOrEmpty( content ), content, "Content name must not be an empty string or whitespace" )
+            .Map( dt => new Comment(   content ,user) );
 }

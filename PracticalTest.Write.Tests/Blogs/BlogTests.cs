@@ -86,4 +86,41 @@ public class BlogTests
         var actualBlog = await db2.BlogPosts.FirstAsync();
         actualBlog.Tags.Select(x=>x.Name).ShouldEqual(tags);
     }
+
+    [Fact]
+    public async void Can_Add_Comment()
+    {
+        var dbFactory = DbContextInitialization.GetInMemoryDbOptionsBuilder<PracticalTestWriteDbContext>().Options;
+        var dbContextFactory = DbContextInitialization.GetDbContextFactory(dbFactory);
+        var db = dbContextFactory.CreateDbContext();
+        db.Seed(true);
+        var blogTest =await db.BlogPosts.FirstAsync();
+        var user =await db.Users.FirstAsync();
+        var content = "Content test";
+        var command = new AddCommentCommand(content, user.Email, blogTest.Id);
+        var handler = new AddCommentCommandHandler(dbContextFactory);
+        var result = await handler.Handle(command, CancellationToken.None);
+        result.Should().BeSuccess();
+        var db2 = dbContextFactory.CreateDbContext();
+        var actualBlog = await db2.BlogPosts.FirstAsync();
+        actualBlog.Comments.ShouldNotBeNull();
+        actualBlog.Comments.First().Content.ShouldEqual(content);
+    }
+
+    [Fact]
+    public async void Can_Not_Add_Empty_Comment()
+    {
+        var dbFactory = DbContextInitialization.GetInMemoryDbOptionsBuilder<PracticalTestWriteDbContext>().Options;
+        var dbContextFactory = DbContextInitialization.GetDbContextFactory(dbFactory);
+        var db = dbContextFactory.CreateDbContext();
+        db.Seed(true);
+        var blogTest = await db.BlogPosts.FirstAsync();
+        var user = await db.Users.FirstAsync();
+        var content = "";
+        var command = new AddCommentCommand(content, user.Email, blogTest.Id);
+        var handler = new AddCommentCommandHandler(dbContextFactory);
+        var result = await handler.Handle(command, CancellationToken.None);
+        result.Should().BeFailure();
+    }
+
 }

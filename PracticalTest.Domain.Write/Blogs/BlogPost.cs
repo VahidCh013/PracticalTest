@@ -48,4 +48,10 @@ public class BlogPost:AggregateEntity,IBlog,ITimeAudit
         return Result.Success();
     }
 
+    public Result AddComment(Comment comment, User user)
+    {
+        Comments.Add(comment);
+        return Result.Success();
+    }
+
 }

@@ -12,9 +12,9 @@ public class Name:ValueObject
 
     public string Value { get; }
     
-    public static Result<Name> Create(string modelCode) =>
+    public static Result<Name> Create(string name) =>
         Result
-            .FailureIf(string.IsNullOrWhiteSpace(modelCode), modelCode,
+            .FailureIf(string.IsNullOrWhiteSpace(name), name,
                 ErrorCode.MustNotBeEmpty.WithMessage("Title must not be an empty string or whitespace"))
             .Ensure(mc => mc.Length <= 100,
                 ErrorCode.MaxLength.WithMessage("Title most not be longer than 100 characters."))
