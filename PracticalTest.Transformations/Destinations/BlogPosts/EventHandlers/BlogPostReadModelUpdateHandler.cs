@@ -9,7 +9,8 @@ using PracticalTest.Infrastructure;
 namespace PracticalTest.Transformations.Destinations.BlogPosts.EventHandlers;
 
 public class BlogPostReadModelUpdateHandler:INotificationHandler<BlogPostCreatedEvent>,
-    INotificationHandler<BlogPostCommentCreatedEvent>
+    INotificationHandler<BlogPostCommentCreatedEvent>,
+    INotificationHandler<BlogPostUpdatedEvent>
 {
     private readonly IDbContextFactory<PracticalTestWriteDbContext> _sourceFactory;
     private readonly IDbContextFactory<PracticalTestTransferDbContext> _destFactory;
@@ -28,6 +29,10 @@ public class BlogPostReadModelUpdateHandler:INotificationHandler<BlogPostCreated
     {
         await HandleChange(notification.BlogPostId,cancellationToken);
     }
+    public async Task Handle(BlogPostUpdatedEvent notification, CancellationToken cancellationToken)
+    {
+        await HandleChange(notification.BlogPostId,cancellationToken);
+    }
     
     private async Task HandleChange(long blogPostId, CancellationToken cancellationToken, bool force = false)
     {
@@ -35,6 +40,7 @@ public class BlogPostReadModelUpdateHandler:INotificationHandler<BlogPostCreated
         var maybeBlogPost = await source.BlogPosts.MaybeFindAsync(blogPostId);
         await UpdateReadData(maybeBlogPost, cancellationToken, force);
     }
+
 
     private async Task UpdateReadData(Maybe<BlogPost> maybeBlogPost, CancellationToken cancellationToken,
         bool force = false)

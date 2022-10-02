@@ -47,6 +47,7 @@ public class BlogPost:AggregateEntity,IBlog,ITimeAudit
     {
         Tags.Clear();
         _tags.AddRange(tags);
+        AddEvent(new BlogPostUpdatedEvent(Id));
         return Result.Success();
     }
 
@@ -60,6 +61,7 @@ public class BlogPost:AggregateEntity,IBlog,ITimeAudit
     public Result UpdateName(Name name)
     {
         Name = name;
+        AddEvent(new BlogPostCommentCreatedEvent());
         return Result.Success();
     }
     
