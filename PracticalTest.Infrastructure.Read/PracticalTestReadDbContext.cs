@@ -1,12 +1,14 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using PracticalTest.Domain.Read.BlogPosts;
 using PracticalTest.Domain.Read.Users;
 
 namespace PracticalTest.Infrastructure.Read;
 
 public class PracticalTestReadDbContext:DbContext
 {
-    public DbSet<User> Users { get; set; }
+    public DbSet<BlogPost> BlogPosts { get; set; }
+    public DbSet<Comment> Comments { get; set; }
     public PracticalTestReadDbContext(DbContextOptions<PracticalTestReadDbContext> options):base(options)
     {
         

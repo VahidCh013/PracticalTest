@@ -4,11 +4,13 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using PracticalTest.Domain.Read.BlogPosts;
 using PracticalTest.Domain.Read.Users;
 using PracticalTest.Domain.Write.Common.Mediator;
 using PracticalTest.Domain.Write.Users;
 using PracticalTest.Infrastructure;
 using PracticalTest.Infrastructure.Read;
+using PracticalTest.Infrastructure.Read.Repositories;
 using PracticalTest.Infrastructure.Repositories;
 using PracticalTest.Transformations;
 
@@ -46,7 +48,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<DbContextFactory<PracticalTestWriteDbContext>>();
 builder.Services.AddScoped<DbContextFactory<PracticalTestReadDbContext>>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 
 builder.Services.AddMediator(
     Assembly.GetAssembly(typeof(PracticalTestWriteDbContext))

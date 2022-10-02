@@ -18,8 +18,6 @@ public class BlogTests
     {
         Output = output;
     }
-
-
     
     /// <summary>
     /// As a user running application can create new Blogs\Posts 
