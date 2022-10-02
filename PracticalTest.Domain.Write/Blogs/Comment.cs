@@ -20,6 +20,7 @@ public class Comment:EntityBase,ITimeAudit
     {
         User = user;
         Content = content;
+    
     }
 
     protected Comment()

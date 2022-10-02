@@ -8,7 +8,8 @@ using PracticalTest.Infrastructure;
 
 namespace PracticalTest.Transformations.Destinations.BlogPosts.EventHandlers;
 
-public class BlogPostReadModelUpdateHandler:INotificationHandler<BlogPostCreatedEvent>
+public class BlogPostReadModelUpdateHandler:INotificationHandler<BlogPostCreatedEvent>,
+    INotificationHandler<BlogPostCommentCreatedEvent>
 {
     private readonly IDbContextFactory<PracticalTestWriteDbContext> _sourceFactory;
     private readonly IDbContextFactory<PracticalTestTransferDbContext> _destFactory;
@@ -19,6 +20,11 @@ public class BlogPostReadModelUpdateHandler:INotificationHandler<BlogPostCreated
         _destFactory = destFactory;
     }
     public async Task Handle(BlogPostCreatedEvent notification, CancellationToken cancellationToken)
+    {
+        await HandleChange(notification.BlogPostId,cancellationToken);
+    }
+    
+    public async Task Handle(BlogPostCommentCreatedEvent notification, CancellationToken cancellationToken)
     {
         await HandleChange(notification.BlogPostId,cancellationToken);
     }
@@ -49,8 +55,31 @@ public class BlogPostReadModelUpdateHandler:INotificationHandler<BlogPostCreated
         readModel.UserEmail = blogPost.User.Email;
         readModel.CreatedOn = blogPost.CreatedOn;
         readModel.ModifiedOn = blogPost.ModifiedOn;
+        var commentReadModels =await dest.BlogPostReadModels.Include(x => x.CommentReadModels)
+            .SelectMany(x=>x.CommentReadModels)
+            .Where(x => x.BlogPostId == blogPost.Id).ToListAsync(cancellationToken: cancellationToken);
+        dest.CommentReadModels.RemoveRange(commentReadModels);
+        var updatedCommentReadModels = new List<CommentReadModel>();
+        await dest.SaveChangesAsync(cancellationToken);
+        foreach (var comment in blogPost.Comments)
+        {
+            var commentReadModel = new CommentReadModel()
+            {
+                Id = comment.Id,
+                BlogPostId = blogPost.Id,
+                Content = comment.Content,
+                Email = comment.User.Email,
+                ModifiedOn = comment.ModifiedOn,
+                CreatedOn = comment.CreatedOn,
+                BlogPostName = blogPost.Name.Value
+            };
+
+           updatedCommentReadModels.Add(commentReadModel);
+        }
+        dest.CommentReadModels.AddRange(updatedCommentReadModels);
         await dest.SaveChangesAsync(cancellationToken);
     }
+
 
 
 }

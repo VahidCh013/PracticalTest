@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PracticalTest.Transformations;
 
@@ -11,9 +12,10 @@ using PracticalTest.Transformations;
 namespace PracticalTest.Transformations.Migrations
 {
     [DbContext(typeof(PracticalTestTransferDbContext))]
-    partial class PracticalTestTransferDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221002130151_Comments")]
+    partial class Comments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

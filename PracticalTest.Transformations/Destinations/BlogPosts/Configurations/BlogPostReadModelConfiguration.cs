@@ -18,6 +18,10 @@ public class BlogPostReadModelConfiguration:IEntityTypeConfiguration<BlogPostRea
         builder.Property(x => x.CreatedOn).IsRequired();
         builder.Property(x => x.CreatedOn).IsRequired();
         builder.Property(x => x.Tags);
-        
+
+        builder.HasMany(x => x.CommentReadModels)
+            .WithOne()
+            .HasForeignKey(x => x.BlogPostId);
+
     }
 }

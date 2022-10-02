@@ -7,6 +7,7 @@ namespace PracticalTest.Transformations;
 public class PracticalTestTransferDbContext:DbContext
 {
     public DbSet<BlogPostReadModel> BlogPostReadModels { get; set; }
+    public DbSet<CommentReadModel> CommentReadModels { get; set; }
     public PracticalTestTransferDbContext(DbContextOptions<PracticalTestTransferDbContext> options):base(options)
     {
         

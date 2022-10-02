@@ -53,6 +53,7 @@ public class BlogPost:AggregateEntity,IBlog,ITimeAudit
     public Result AddComment(Comment comment, User user)
     {
         Comments.Add(comment);
+        AddEvent(new BlogPostCommentCreatedEvent());
         return Result.Success();
     }
 
