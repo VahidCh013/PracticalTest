@@ -15,29 +15,41 @@ public class BlogController:ControllerBase
 {
 
     private readonly IMediator _mediator;
-    private readonly string? _userEmail;
 
     public BlogController(IMediator mediator)
     {
         _mediator = mediator;
-        _userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 
     [HttpPost("AddBlog")]
     [Authorize]
-    
-    public async Task<AddBlogPayload> AddBlog(string name, string description,string content,List<string> tags)
-    => await _mediator.Send(new AddBlogCommand(name, description,_userEmail,content,tags))
+
+    public async Task<AddBlogPayload> AddBlog(string name, string description, string content, string[] tags)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return await _mediator.Send(new AddBlogCommand(name, description, userEmail, content, tags.ToList()))
             .Match(r => new AddBlogPayload(r.id, null)
                 , e => new AddBlogPayload(null, e.UserErrorFromMessageString()));
-    
+    }
+
+    [HttpPost("UpdateBlogPost")]
+    [Authorize]
+    public async Task<UpdateBlogPostPayload> UpdateBlogPost(long blogPostId,string name, string description, string content, string[] tags)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return await _mediator.Send(new UpdateBlogPostCommand(blogPostId,name, description, userEmail, content, tags.ToList()))
+            .Match(r => new UpdateBlogPostPayload(r.Id, null)
+                , e => new UpdateBlogPostPayload(null, e.UserErrorFromMessageString()));
+    }
 
     [HttpPost("AddComment")]
     [Authorize]
-    public async Task<AddCommentPayload> AddComment(string Content, long BlogPostId)
-  =>await _mediator.Send(new AddCommentCommand(Content,_userEmail,BlogPostId))
-      .Match(r => new AddCommentPayload(r.Id, null)
-          , e => new AddCommentPayload(null, e.UserErrorFromMessageString()));
-
+    public async Task<AddCommentPayload> AddComment(string content, long blogPostId)
+    {
+        var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+       return await _mediator.Send(new AddCommentCommand(content, userEmail, blogPostId))
+            .Match(r => new AddCommentPayload(r.Id, null)
+                , e => new AddCommentPayload(null, e.UserErrorFromMessageString()));
+    }
 
 }

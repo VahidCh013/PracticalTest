@@ -1,10 +1,12 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using PracticalTest.Transformations.Destinations.BlogPosts;
 
 namespace PracticalTest.Transformations;
 
 public class PracticalTestTransferDbContext:DbContext
 {
+    public DbSet<BlogPostReadModel> BlogPostReadModels { get; set; }
     public PracticalTestTransferDbContext(DbContextOptions<PracticalTestTransferDbContext> options):base(options)
     {
         

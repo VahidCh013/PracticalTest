@@ -14,11 +14,12 @@ public class DomainEventPublishingInterceptor:SaveChangesInterceptor
         _mediator = mediator;
     }
 
+   
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
         var changedStates = new[] {EntityState.Added, EntityState.Deleted, EntityState.Modified};
 
-        var entities = eventData.Context.ChangeTracker.Entries().Where(e => changedStates.Contains(e.State)).ToList();
+        var entities = eventData.Context.ChangeTracker.Entries().Where( e => e.Entity is ITimeAudit && changedStates.Contains( e.State ) );
         foreach ( var entity in entities ) {
             UpdateTimeAudit( entity.Entity );
         }
@@ -31,14 +32,21 @@ public class DomainEventPublishingInterceptor:SaveChangesInterceptor
     }
     public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
     {
-        foreach (var entityEntry in eventData.Context.ChangeTracker.Entries<IAggregateEntity>()) PublishEvents(entityEntry.Entity);
-
+        var changedStates = new[] {EntityState.Added, EntityState.Deleted, EntityState.Modified};
+        var entities = eventData.Context.ChangeTracker.Entries().Where( e => e.Entity is ITimeAudit && changedStates.Contains( e.State ) );
+        foreach ( var entity in entities ) {
+            UpdateTimeAudit( entity.Entity );
+        }
         return result;
     }
     public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = new())
-    {
+    { 
+        var changedStates = new[] {EntityState.Added, EntityState.Deleted, EntityState.Modified};
         foreach (var entityEntry in eventData.Context.ChangeTracker.Entries<IAggregateEntity>()) PublishEvents(entityEntry.Entity);
-
+        var entities = eventData.Context.ChangeTracker.Entries().Where( e => e.Entity is ITimeAudit && changedStates.Contains( e.State ) );
+        foreach ( var entity in entities ) {
+            UpdateTimeAudit( entity.Entity );
+        }
         return new ValueTask<int>(result);
     }
     private void PublishEvents(IAggregateEntity entity)

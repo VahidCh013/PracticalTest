@@ -7,12 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MediatR" Version="9.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.9" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Destinations\BlogPosts\EventHandlers" />
+      <ProjectReference Include="..\PracticalTest.Domain.Write\PracticalTest.Domain.Write.csproj" />
+      <ProjectReference Include="..\PracticalTest.Infrastructure.Write\PracticalTest.Infrastructure.Write.csproj" />
     </ItemGroup>
 
 </Project>

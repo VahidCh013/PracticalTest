@@ -49,7 +49,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
 builder.Services.AddMediator(
-    Assembly.GetAssembly(typeof(PracticalTestWriteDbContext)));
+    Assembly.GetAssembly(typeof(PracticalTestWriteDbContext))
+    ,Assembly.GetAssembly(typeof(PracticalTestTransferDbContext)));
 
 
 var app = builder.Build();

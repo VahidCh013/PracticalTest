@@ -7,7 +7,7 @@ public class BlogPostReadModel
     public string Desciption { get; set; }
     public string UserEmail { get; set; }
     public string Content { get; set; }
-    public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset ModifiedOn { get; set; }
     public string Tags { get; set; }
 }

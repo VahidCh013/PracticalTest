@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using PracticalTest.Domain.Write.Common;
 using PracticalTest.Domain.Write.ValueObjects;
 
 namespace PracticalTest.Infrastructure.Blogs.Commands;
@@ -21,7 +22,7 @@ public class UpdateBlogPostCommandHandler:IRequestHandler<UpdateBlogPostCommand,
             cancellationToken: cancellationToken);
         return await Result.FailureIf(blogPost==null,$"No BlogPost found for Id {request.BlogPostId}")
             .Map(()=>blogPost)
-            .Ensure(_=>blogPost.User.Email==request.Email,"You are not allowed to update this blog")
+            .Ensure(_=>blogPost.User.Email==request.Email, ErrorCode.NotAllowed.WithMessage("You are not allowed to update this blog. this post doesn't belong to you"))
             .Bind(_=>Name.Create(request.Name))
             .Check(name=>blogPost.UpdateName(name))
             .Check(_=>blogPost.UpdateDescription(request.Description))
