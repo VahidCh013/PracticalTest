@@ -12,8 +12,8 @@ using PracticalTest.Infrastructure;
 namespace PracticalTest.Infrastructure.Migrations
 {
     [DbContext(typeof(PracticalTestWriteDbContext))]
-    [Migration("20221001172832_AddTags")]
-    partial class AddTags
+    [Migration("20221002092335_SeedUsers")]
+    partial class SeedUsers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,13 +40,17 @@ namespace PracticalTest.Infrastructure.Migrations
                     b.ToTable("BlogPostTag", "dbo");
                 });
 
-            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Blog", b =>
+            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.BlogPost", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("Content")
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -75,10 +79,10 @@ namespace PracticalTest.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Blogs", "dbo");
+                    b.ToTable("BlogPosts", "dbo");
                 });
 
-            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.BlogPost", b =>
+            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Comment", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,12 +90,12 @@ namespace PracticalTest.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<long?>("BlogId")
+                    b.Property<long?>("BlogPostId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Content")
-                        .HasMaxLength(5000)
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<DateTimeOffset>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -103,11 +107,16 @@ namespace PracticalTest.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasDefaultValueSql("getutcdate()");
 
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BlogId");
+                    b.HasIndex("BlogPostId");
 
-                    b.ToTable("BlogPost", "dbo");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments", "dbo");
                 });
 
             modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Tag", b =>
@@ -128,9 +137,14 @@ namespace PracticalTest.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset")
                         .HasDefaultValueSql("getutcdate()");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Tag", "dbo");
+                    b.ToTable("Tags", "dbo");
                 });
 
             modelBuilder.Entity("PracticalTest.Domain.Write.Users.User", b =>
@@ -181,10 +195,23 @@ namespace PracticalTest.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Blog", b =>
+            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.BlogPost", b =>
                 {
                     b.HasOne("PracticalTest.Domain.Write.Users.User", "User")
-                        .WithMany("Blogs")
+                        .WithMany("BlogPosts")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Comment", b =>
+                {
+                    b.HasOne("PracticalTest.Domain.Write.Blogs.BlogPost", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("BlogPostId");
+
+                    b.HasOne("PracticalTest.Domain.Write.Users.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -192,19 +219,12 @@ namespace PracticalTest.Infrastructure.Migrations
 
             modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.BlogPost", b =>
                 {
-                    b.HasOne("PracticalTest.Domain.Write.Blogs.Blog", null)
-                        .WithMany("BlogPosts")
-                        .HasForeignKey("BlogId");
-                });
-
-            modelBuilder.Entity("PracticalTest.Domain.Write.Blogs.Blog", b =>
-                {
-                    b.Navigation("BlogPosts");
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("PracticalTest.Domain.Write.Users.User", b =>
                 {
-                    b.Navigation("Blogs");
+                    b.Navigation("BlogPosts");
                 });
 #pragma warning restore 612, 618
         }
