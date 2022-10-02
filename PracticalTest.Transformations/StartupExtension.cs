@@ -2,14 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace PracticalTest.Infrastructure.Read;
+namespace PracticalTest.Transformations;
 
 public static class StartupExtension
 {
-    public static IServiceCollection AddReadModelDependencies(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddReadDependencies(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContextFactory<PracticalTestReadDbContext>(    (provider, options) => SetUpWriteContext(configuration,  options, provider)
-        );
+        services.AddDbContextFactory<PracticalTestTransferDbContext>(    (provider, options) => SetUpWriteContext(configuration,  options, provider));
         return services;
     }
 
@@ -20,8 +19,8 @@ public static class StartupExtension
             .UseSqlServer(configuration.GetConnectionString("PracticalTestConnection"),
                 b =>
                 {
-                    b.MigrationsAssembly("PracticalTest.Infrastructure.Read");
-                    b.MigrationsHistoryTable("__PTReadContextMigrationHistory",
+                    b.MigrationsAssembly("PracticalTest.Transformations");
+                    b.MigrationsHistoryTable("__PTTransformationsContextMigrationHistory",
                         "read");
                 })
             .EnableDetailedErrors();

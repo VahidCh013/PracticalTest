@@ -23,6 +23,7 @@
       <ProjectReference Include="..\PracticalTest.Domain.Write\PracticalTest.Domain.Write.csproj" />
       <ProjectReference Include="..\PracticalTest.Infrastructure.Read\PracticalTest.Infrastructure.Read.csproj" />
       <ProjectReference Include="..\PracticalTest.Infrastructure.Write\PracticalTest.Infrastructure.Write.csproj" />
+      <ProjectReference Include="..\PracticalTest.Transformations\PracticalTest.Transformations.csproj" />
     </ItemGroup>
 
 </Project>

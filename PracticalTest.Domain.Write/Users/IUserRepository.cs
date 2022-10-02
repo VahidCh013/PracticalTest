@@ -1,4 +1,4 @@
-﻿namespace PracticalTest.Domain.Read.Users;
+﻿namespace PracticalTest.Domain.Write.Users;
 
 public interface IUserRepository
 {

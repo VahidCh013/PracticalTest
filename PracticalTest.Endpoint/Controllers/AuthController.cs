@@ -4,9 +4,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PracticalTest.Domain.Read.Users;
 using PracticalTest.Domain.Write.Users;
-using User = PracticalTest.Domain.Read.Users.User;
+
 
 namespace PracticalTest.Endpoint.Controllers;
 

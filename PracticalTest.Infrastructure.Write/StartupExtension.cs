@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PracticalTest.Domain.Write.Common.Mediator;
 
 namespace PracticalTest.Infrastructure;
 
@@ -26,7 +28,9 @@ public static class StartupExtension
                 })
             .UseLazyLoadingProxies()
             .EnableDetailedErrors();
-
+        options.AddInterceptors(
+            new DomainEventPublishingInterceptor(provider.GetRequiredService<IMediator>())
+        );
         //This option only should be enabled in Development environment
         //IHostEnvironment should be included in production applications.
         options.EnableSensitiveDataLogging();

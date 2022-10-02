@@ -23,17 +23,18 @@ public class BlogController:ControllerBase
         _userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 
-    [HttpPost]
+    [HttpPost("AddBlog")]
     [Authorize]
+    
     public async Task<AddBlogPayload> AddBlog(string name, string description,string content,List<string> tags)
     => await _mediator.Send(new AddBlogCommand(name, description,_userEmail,content,tags))
             .Match(r => new AddBlogPayload(r.id, null)
                 , e => new AddBlogPayload(null, e.UserErrorFromMessageString()));
     
 
-    [HttpPost]
+    [HttpPost("AddComment")]
     [Authorize]
-    public async Task<AddCommentPayload> AddBlog(string Content, long BlogPostId)
+    public async Task<AddCommentPayload> AddComment(string Content, long BlogPostId)
   =>await _mediator.Send(new AddCommentCommand(Content,_userEmail,BlogPostId))
       .Match(r => new AddCommentPayload(r.Id, null)
           , e => new AddCommentPayload(null, e.UserErrorFromMessageString()));

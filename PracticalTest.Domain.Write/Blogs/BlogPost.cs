@@ -1,6 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿
 using CSharpFunctionalExtensions;
-using JetBrains.Annotations;
+using PracticalTest.Domain.Write.Blogs.Events;
 using PracticalTest.Domain.Write.Common;
 using PracticalTest.Domain.Write.Users;
 using PracticalTest.Domain.Write.ValueObjects;
@@ -23,6 +23,7 @@ public class BlogPost:AggregateEntity,IBlog,ITimeAudit
         Name = name;
         Description = description;
         User = user;
+        AddEvent(new BlogPostCreatedEvent());
     }
 
     protected BlogPost()

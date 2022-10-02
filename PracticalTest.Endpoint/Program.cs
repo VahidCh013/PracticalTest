@@ -6,9 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using PracticalTest.Domain.Read.Users;
 using PracticalTest.Domain.Write.Common.Mediator;
+using PracticalTest.Domain.Write.Users;
 using PracticalTest.Infrastructure;
 using PracticalTest.Infrastructure.Read;
-using PracticalTest.Infrastructure.Read.Repositories;
+using PracticalTest.Infrastructure.Repositories;
+using PracticalTest.Transformations;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,7 @@ builder.Services.AddSwaggerGen();
 
 var appConfiguration = builder.Configuration;
 builder.Services.AddReadDependencies(appConfiguration);
+builder.Services.AddReadModelDependencies(appConfiguration);
 builder.Services.AddWriteDependencies(appConfiguration);
 
 
@@ -54,8 +57,8 @@ using (var scope = app.Services.CreateScope())
 {
     using (var writeDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestWriteDbContext>>().CreateDbContext())
         writeDb.Database.Migrate();
-    using (var readDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestReadDbContext>>().CreateDbContext())
-         readDb.Database.Migrate();
+    using (var transformDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestTransferDbContext>>().CreateDbContext())
+        transformDb.Database.Migrate();
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
