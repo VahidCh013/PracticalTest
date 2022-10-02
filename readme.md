@@ -10,7 +10,7 @@ Simply just run the application, it will seed the corresponding data.
 
 **Packages**
 1. MediatR
-2. SCharpFunctionalExtensions
+2. CsharpFunctionalExtensions
 
 **Approaches**
 
