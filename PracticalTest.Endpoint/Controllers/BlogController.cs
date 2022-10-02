@@ -15,23 +15,28 @@ public class BlogController:ControllerBase
 {
 
     private readonly IMediator _mediator;
+    private readonly string? _userEmail;
 
     public BlogController(IMediator mediator)
     {
         _mediator = mediator;
+        _userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 
     [HttpPost]
     [Authorize]
     public async Task<AddBlogPayload> AddBlog(string name, string description,string content,List<string> tags)
-    {
-        var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return await _mediator.Send(new AddBlogCommand(name, description,userEmail,content,tags))
+    => await _mediator.Send(new AddBlogCommand(name, description,_userEmail,content,tags))
             .Match(r => new AddBlogPayload(r.id, null)
                 , e => new AddBlogPayload(null, e.UserErrorFromMessageString()));
-        
-        
-    }
+    
+
+    [HttpPost]
+    [Authorize]
+    public async Task<AddCommentPayload> AddBlog(string Content, long BlogPostId)
+  =>await _mediator.Send(new AddCommentCommand(Content,_userEmail,BlogPostId))
+      .Match(r => new AddCommentPayload(r.Id, null)
+          , e => new AddCommentPayload(null, e.UserErrorFromMessageString()));
 
 
 }

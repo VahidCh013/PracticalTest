@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Security.Cryptography;
+using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using PracticalTest.Domain.Write.Common;
 using PracticalTest.Domain.Write.Users;
@@ -8,8 +9,8 @@ namespace PracticalTest.Domain.Write.Blogs;
 
 public class BlogPost:AggregateEntity,IBlog,ITimeAudit
 {
-    public Name Name { get; }
-    public string Description { get; }
+    public Name Name { get; private set; }
+    public string Description { get;private set; }
     public virtual User User { get; }
     private readonly List<Tag> _tags;
     private readonly List<Comment> _comments;
@@ -51,6 +52,18 @@ public class BlogPost:AggregateEntity,IBlog,ITimeAudit
     public Result AddComment(Comment comment, User user)
     {
         Comments.Add(comment);
+        return Result.Success();
+    }
+
+    public Result UpdateName(Name name)
+    {
+        Name = name;
+        return Result.Success();
+    }
+    
+    public Result UpdateDescription(string description)
+    {
+        Description = description;
         return Result.Success();
     }
 

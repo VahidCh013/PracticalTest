@@ -13,14 +13,25 @@ public static class BlogTestData
     
     public static async void Seed(this PracticalTestWriteDbContext db,bool seedBlog=false)
     {
-        var user = User.Create(
-            "test.user@gmail.com",
-      "test.user@gmail.com",
-            "test",
-           "StandardUser"
-        );
+        var users = new List<User>
+        {
+            User.Create(
+                "test.user@gmail.com",
+                "test.user@gmail.com",
+                "test",
+                "StandardUser"
+            ).Value,
+            User.Create(
+                "test2.user@gmail.com",
+                "test2.user@gmail.com",
+                "test",
+                "StandardUser"
+            ).Value
+        };
+        
+       
         var tags = new List<Tag>() { Tag.Create("Angular").Value,Tag.Create("C#").Value };
-        await db.Users.AddAsync(user.Value);
+        await db.Users.AddRangeAsync(users);
         await db.Tags.AddRangeAsync(tags);
         await db.SaveChangesAsync();
         if (seedBlog)
