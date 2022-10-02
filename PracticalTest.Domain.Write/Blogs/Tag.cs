@@ -1,3 +1,4 @@
+using CSharpFunctionalExtensions;
 using PracticalTest.Domain.Write.Common;
 
 namespace PracticalTest.Domain.Write.Blogs;
@@ -13,7 +14,7 @@ public class Tag:EntityBase,ITimeAudit
         _blogPosts = new List<BlogPost>();
     }
 
-    private Tag()
+    protected Tag()
     {
         
     }
@@ -24,4 +25,9 @@ public class Tag:EntityBase,ITimeAudit
     public string CreatedBy { get; }
     public DateTimeOffset ModifiedOn { get; }
     public string ModifiedBy { get; }
+
+
+    public static Result<Tag> Create(string name)
+      =>Result.FailureIf( string.IsNullOrEmpty( name ), name, "Tag name must not be an empty string or whitespace" )
+    .Map( dt => new Tag(  name) );
 }

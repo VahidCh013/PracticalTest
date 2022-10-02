@@ -1,4 +1,5 @@
-﻿using PracticalTest.Domain.Write.Blogs;
+﻿using System.Diagnostics.Tracing;
+using PracticalTest.Domain.Write.Blogs;
 using PracticalTest.Domain.Write.Users;
 using PracticalTest.Infrastructure;
 using PracticalTest.Write.TestHelpers;
@@ -8,7 +9,7 @@ namespace PracticalTest.Write.Test.TestData;
 public static class BlogTestData
 {
     
-    public static async void SeedUser(this PracticalTestWriteDbContext db)
+    public static async void Seed(this PracticalTestWriteDbContext db)
     {
         var user = User.Create(
             "test.user@gmail.com",
@@ -16,7 +17,9 @@ public static class BlogTestData
             "test",
            "StandardUser"
         );
+        var tags = new List<Tag>() { Tag.Create("Angular").Value,Tag.Create("C#").Value };
         await db.Users.AddAsync(user.Value);
+        await db.Tags.AddRangeAsync(tags);
         await db.SaveChangesAsync();
     }
 }

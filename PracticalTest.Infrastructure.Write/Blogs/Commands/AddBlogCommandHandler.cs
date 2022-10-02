@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using PracticalTest.Domain.Write.Blogs;
 using PracticalTest.Domain.Write.Common;
 using PracticalTest.Domain.Write.ValueObjects;
@@ -22,19 +21,25 @@ public class AddBlogCommandHandler:IRequestHandler<AddBlogCommand,Result<BlogId>
         var writeDb = _writeDbContextFactory.CreateDbContext();
        
         return await Name.Create(request.Name)
-            .Ensure(async name=>!await writeDb.Blogs.AnyAsync(x => x.Name == name,  cancellationToken),
+            .Ensure(async name=>!await writeDb.BlogPosts.AnyAsync(x => x.Name == name,  cancellationToken),
                 ErrorCode.AlreadyExists.WithMessage($"Blog with the name \"{request.Name}\" already exists."))
             .Map( async n=>new
             {
                 Name=n,
                 User=await writeDb.Users.FirstAsync(x => x.Email == request.email, cancellationToken: cancellationToken)
             })
-            .Map(result => Blog.Create(result.Name, request.Description, result.User))
+            .Map(result => BlogPost.Create(result.Name, request.Description, result.User,request.content))
+            .Map(async r=>new
+            {
+                BlogPost=r.Value,
+                Tags=await writeDb.Tags.Where(x=>request.tags.Contains(x.Name)).ToListAsync(cancellationToken: cancellationToken)
+            })
+            .Check(r=>r.BlogPost.ApplyTags(r.Tags))
             .OnSuccessTry(async r =>
             {
-                await writeDb.Blogs.AddAsync(r.Value, cancellationToken);
+                await writeDb.BlogPosts.AddAsync(r.BlogPost, cancellationToken);
                 await writeDb.SaveChangesAsync(cancellationToken);
-                return new BlogId(r.Value.Id);
+                return new BlogId(r.BlogPost.Id);
             },ex=>"Error occured");
         
     }

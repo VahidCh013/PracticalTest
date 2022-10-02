@@ -12,7 +12,7 @@ public class User:EntityBase
     public string Password { get;  }
     public string Role { get;  }
 
-    public virtual IList<Blog> Blogs { get;  }
+    public virtual IList<BlogPost> BlogPosts { get;  }
 
     public User()
     {
@@ -24,7 +24,7 @@ public class User:EntityBase
         Email = email;
         Password = password;
         Role = role;
-        Blogs = new List<Blog>();
+        BlogPosts = new List<BlogPost>();
     }
 
     public static Result<User> Create(string userName, string email, string password, string role)

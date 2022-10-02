@@ -11,7 +11,7 @@ public class TagConfiguration:IEntityTypeConfiguration<Tag>
     {
         builder.MapKey();
         builder.MapTimeAudit();
-
+        builder.Property(x => x.Name).HasMaxLength(200).IsRequired();
         builder.HasMany(x => x.BlogPosts)
             .WithMany(x => x.Tags);
     }

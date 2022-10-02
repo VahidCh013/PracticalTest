@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PracticalTest.Domain.Write.Common;
-using PracticalTest.Domain.Write.Common.Mediator;
+using PracticalTest.Endpoint.Payloads;
 using PracticalTest.Infrastructure.Blogs.Commands;
 
 namespace PracticalTest.Endpoint.Controllers;
@@ -23,14 +23,15 @@ public class BlogController:ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<AddBlogPayload> AddBlog(string name, string description)
+    public async Task<AddBlogPayload> AddBlog(string name, string description,string content,List<string> tags)
     {
         var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return await _mediator.Send(new AddBlogCommand(name, description,userEmail))
+        return await _mediator.Send(new AddBlogCommand(name, description,userEmail,content,tags))
             .Match(r => new AddBlogPayload(r.id, null)
                 , e => new AddBlogPayload(null, e.UserErrorFromMessageString()));
+        
+        
     }
 
-    public record AddBlogPayload( long? id,
-        IEnumerable<UserError>? Errors = null) : Payload(Errors);
+
 }
