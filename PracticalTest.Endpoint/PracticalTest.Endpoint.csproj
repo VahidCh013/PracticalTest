@@ -26,4 +26,8 @@
       <ProjectReference Include="..\PracticalTest.Transformations\PracticalTest.Transformations.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Docs\readme.md" />
+    </ItemGroup>
+
 </Project>
