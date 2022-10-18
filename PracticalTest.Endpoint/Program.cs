@@ -64,10 +64,10 @@ using (var scope = app.Services.CreateScope())
         transformDb.Database.Migrate();
 }
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()) {
+//if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
