@@ -26,6 +26,7 @@ public class AuthController:ControllerBase
     [Route("AccessToken")]
     public async Task<IActionResult> AccessToken([FromBody] LoginCredential? credential)
     {
+        throw new Exception("error");
         var user = await _userRepository.FindUserByEmail(credential.Email,credential.Password);
         if (user is null)
         {

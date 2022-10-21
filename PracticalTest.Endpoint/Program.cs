@@ -8,6 +8,7 @@ using PracticalTest.Domain.Read.BlogPosts;
 using PracticalTest.Domain.Read.Users;
 using PracticalTest.Domain.Write.Common.Mediator;
 using PracticalTest.Domain.Write.Users;
+using PracticalTest.Endpoint.Filters;
 using PracticalTest.Infrastructure;
 using PracticalTest.Infrastructure.Read;
 using PracticalTest.Infrastructure.Read.Repositories;
@@ -17,6 +18,7 @@ using PracticalTest.Transformations;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+//builder.Services.AddControllers(opt=>opt.Filters.Add<ErrorHandlingFilterAttribute>());
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -68,6 +70,7 @@ using (var scope = app.Services.CreateScope())
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
+app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
