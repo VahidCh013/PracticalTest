@@ -9,9 +9,9 @@ using PracticalTest.Domain.Write.Users;
 
 namespace PracticalTest.Endpoint.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
 [AllowAnonymous]
+[Route("[Controller]")]
 public class AuthController:ControllerBase
 {
     private readonly IUserRepository _userRepository;
@@ -22,19 +22,17 @@ public class AuthController:ControllerBase
         _userRepository = userRepository;
     }
 
-    [HttpPost]
-    [Route("AccessToken")]
+
+    [HttpPost("AccessToken")]
     public async Task<IActionResult> AccessToken([FromBody] LoginCredential? credential)
     {
-        throw new Exception("error");
         var user = await _userRepository.FindUserByEmail(credential.Email,credential.Password);
         if (user is null)
         {
-            return new BadRequestObjectResult(new { Message = "Login Failed" });
+            return NotFound(new { Message = "Login Failed" });
         }
         var accessToken = GenerateToken(user);
         return Ok(new { AccessToken = accessToken });
-        return Ok();
     }
     
     

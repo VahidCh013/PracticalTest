@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PracticalTest.Domain.Read.BlogPosts;
 using PracticalTest.Domain.Write.Common;
+using PracticalTest.Endpoint.Errors;
 using PracticalTest.Endpoint.Payloads;
 using PracticalTest.Infrastructure.Blogs.Commands;
 
@@ -56,11 +57,18 @@ public class BlogController : ControllerBase
     }
 
     [HttpGet("GetAllOwnBlogPosts")]
-    [Authorize]
+   
     public async Task<List<BlogPost>> GetAllOwnBlogPosts()
     {
         var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return await _blogPostRepository.GetAllBlogPosts(userEmail);
+        var allOwnBlogPosts=await _blogPostRepository.GetAllBlogPosts(userEmail);
+        if (allOwnBlogPosts.Count == 0)
+        {
+            throw new NotFoundCustomException("no records found");
+        }
+
+        return allOwnBlogPosts;
+
     }
     [HttpGet("GetLatestTenDaysBlogPosts")]
     [Authorize]

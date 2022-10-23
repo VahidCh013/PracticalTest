@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace PracticalTest.Endpoint.Controllers;
 
-
+[Route("[controller]")]
 public class ErrorsController:ControllerBase
 {
-    [Route("/error")]
-    [HttpGet]
+    [HttpGet("/Error")]
     public IActionResult Error()
     {
-        return Problem();
+        var exception = HttpContext.Features.Get<IExceptionHandlerFeature>().Error;
+        return Problem(title:exception?.Message,statusCode:400);
     }
 }
