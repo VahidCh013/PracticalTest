@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PracticalTest.Common.Errors;
 using PracticalTest.Domain.Write.Users;
 
 
@@ -29,8 +30,7 @@ public class AuthController:ControllerBase
         var user = await _userRepository.FindUserByEmail(credential.Email,credential.Password);
         if (user is null)
         {
-            throw new Exception("error");
-            //return NotFound(new { Message = "Login Failed" });
+            throw new NotFoundUserException();
         }
         var accessToken = GenerateToken(user);
         return Ok(new { AccessToken = accessToken });

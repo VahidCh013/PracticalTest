@@ -10,8 +10,7 @@ using PracticalTest.Domain.Read.BlogPosts;
 using PracticalTest.Domain.Read.Users;
 using PracticalTest.Domain.Write.Common.Mediator;
 using PracticalTest.Domain.Write.Users;
-using PracticalTest.Endpoint.Errors;
-using PracticalTest.Endpoint.Filters;
+using PracticalTest.Endpoint.Common.Errors;
 using PracticalTest.Infrastructure;
 using PracticalTest.Infrastructure.Read;
 using PracticalTest.Infrastructure.Read.Repositories;
@@ -23,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 //builder.Services.AddControllers(opt=>opt.Filters.Add<ErrorHandlingFilterAttribute>());
 builder.Services.AddControllers();
-//builder.Services.AddSingleton<ProblemDetailsFactory, PracticalTestProblemDetailsFactory>();
+builder.Services.AddSingleton<ProblemDetailsFactory, PracticalTestProblemDetailsFactory>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -82,12 +81,6 @@ var app = builder.Build();
     }
 
     app.UseExceptionHandler("/error");
-    // app.Map("/error", (HttpContext httpContext) =>
-    //
-    // {
-    //     Exception? exception = httpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
-    //     return Results.Problem();
-    // });
     app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();

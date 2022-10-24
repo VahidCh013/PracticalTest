@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 
-namespace PracticalTest.Endpoint.Errors;
+namespace PracticalTest.Endpoint.Common.Errors;
 
 public class PracticalTestProblemDetailsFactory:ProblemDetailsFactory
 {
