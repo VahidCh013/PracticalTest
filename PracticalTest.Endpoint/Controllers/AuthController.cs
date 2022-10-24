@@ -11,7 +11,7 @@ namespace PracticalTest.Endpoint.Controllers;
 
 [ApiController]
 [AllowAnonymous]
-[Route("[Controller]")]
+[Route("[controller]")]
 public class AuthController:ControllerBase
 {
     private readonly IUserRepository _userRepository;
@@ -22,18 +22,20 @@ public class AuthController:ControllerBase
         _userRepository = userRepository;
     }
 
-
     [HttpPost("AccessToken")]
+
     public async Task<IActionResult> AccessToken([FromBody] LoginCredential? credential)
     {
         var user = await _userRepository.FindUserByEmail(credential.Email,credential.Password);
         if (user is null)
         {
-            return NotFound(new { Message = "Login Failed" });
+            throw new Exception("error");
+            //return NotFound(new { Message = "Login Failed" });
         }
         var accessToken = GenerateToken(user);
         return Ok(new { AccessToken = accessToken });
     }
+
     
     
     

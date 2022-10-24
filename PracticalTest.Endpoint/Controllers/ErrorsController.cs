@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PracticalTest.Endpoint.Controllers;
 
-[Route("[controller]")]
+[ApiController]
 public class ErrorsController:ControllerBase
 {
-    [HttpGet("/Error")]
+    [Route("/error")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public IActionResult Error()
     {
         var exception = HttpContext.Features.Get<IExceptionHandlerFeature>().Error;
