@@ -2,12 +2,15 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using PracticalTest.Domain.Read.BlogPosts;
 using PracticalTest.Domain.Read.Users;
 using PracticalTest.Domain.Write.Common.Mediator;
 using PracticalTest.Domain.Write.Users;
+using PracticalTest.Endpoint.Common.Errors;
 using PracticalTest.Infrastructure;
 using PracticalTest.Infrastructure.Read;
 using PracticalTest.Infrastructure.Read.Repositories;
@@ -17,7 +20,9 @@ using PracticalTest.Transformations;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
+//builder.Services.AddControllers(opt=>opt.Filters.Add<ErrorHandlingFilterAttribute>());
 builder.Services.AddControllers();
+builder.Services.AddSingleton<ProblemDetailsFactory, PracticalTestProblemDetailsFactory>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -29,8 +34,10 @@ builder.Services.AddWriteDependencies(appConfiguration);
 
 
 //JWT Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
-    options.TokenValidationParameters = new TokenValidationParameters {
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
@@ -52,24 +59,32 @@ builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
 
 builder.Services.AddMediator(
     Assembly.GetAssembly(typeof(PracticalTestWriteDbContext))
-    ,Assembly.GetAssembly(typeof(PracticalTestTransferDbContext)));
+    , Assembly.GetAssembly(typeof(PracticalTestTransferDbContext)));
 
 
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
 {
-    using (var writeDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestWriteDbContext>>().CreateDbContext())
-        writeDb.Database.Migrate();
-    using (var transformDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestTransferDbContext>>().CreateDbContext())
-        transformDb.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        using (var writeDb = scope.ServiceProvider.GetRequiredService<IDbContextFactory<PracticalTestWriteDbContext>>()
+                   .CreateDbContext())
+            writeDb.Database.Migrate();
+        using (var transformDb = scope.ServiceProvider
+                   .GetRequiredService<IDbContextFactory<PracticalTestTransferDbContext>>().CreateDbContext())
+            transformDb.Database.Migrate();
+    }
+    //Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseExceptionHandler("/error");
+    app.UseHttpsRedirection();
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
+
+    app.Run();
 }
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-//}
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
-app.Run();

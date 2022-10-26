@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PracticalTest.Common\PracticalTest.Common.csproj" />
       <ProjectReference Include="..\PracticalTest.Domain.Read\PracticalTest.Domain.Read.csproj" />
       <ProjectReference Include="..\PracticalTest.Domain.Write\PracticalTest.Domain.Write.csproj" />
       <ProjectReference Include="..\PracticalTest.Infrastructure.Read\PracticalTest.Infrastructure.Read.csproj" />
@@ -28,6 +29,10 @@
 
     <ItemGroup>
       <None Remove="Docs\readme.md" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Common" />
     </ItemGroup>
 
 </Project>
