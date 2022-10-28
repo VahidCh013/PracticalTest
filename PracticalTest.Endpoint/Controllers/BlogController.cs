@@ -3,10 +3,13 @@ using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PracticalTest.Domain.Read.BlogPosts;
 using PracticalTest.Domain.Write.Common;
+using PracticalTest.Domain.Write.Users;
 using PracticalTest.Endpoint.Common.Errors;
 using PracticalTest.Endpoint.Payloads;
+using PracticalTest.Endpoint.Validations;
 using PracticalTest.Infrastructure.Blogs.Commands;
 
 namespace PracticalTest.Endpoint.Controllers;
@@ -48,12 +51,23 @@ public class BlogController : ControllerBase
 
     [HttpPost("AddComment")]
     [Authorize]
-    public async Task<AddCommentPayload> AddComment(string content, long blogPostId)
+    public async Task<IActionResult> AddComment(CreateCommentRequest commentRequest,[FromServices] CreateCommentRequestValidator validator)
     {
+        var result = await validator.ValidateAsync(commentRequest);
+        if (!result.IsValid)
+        {
+            var modelState = new ModelStateDictionary();
+            foreach (var failure in result.Errors)
+            {
+                modelState.AddModelError(failure.PropertyName,failure.ErrorMessage);
+            }
+            return ValidationProblem(modelState);
+        }
         var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return await _mediator.Send(new AddCommentCommand(content, userEmail, blogPostId))
+        await _mediator.Send(new AddCommentCommand(commentRequest.Comment, userEmail, commentRequest.BlogpostId))
             .Match(r => new AddCommentPayload(r.Id, null)
                 , e => new AddCommentPayload(null, e.UserErrorFromMessageString()));
+        return Ok();
     }
 
     [HttpGet("GetAllOwnBlogPosts")]

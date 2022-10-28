@@ -1,0 +1,7 @@
+﻿POST {{urlRoot}}/Auth/AccessToken
+Content-Type: application/json
+
+{
+  "email":"test.user@gmail.com",
+  "password":"P@ssw0rd"
+}

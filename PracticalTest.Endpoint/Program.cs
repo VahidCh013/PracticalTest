@@ -2,6 +2,7 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using PracticalTest.Domain.Read.Users;
 using PracticalTest.Domain.Write.Common.Mediator;
 using PracticalTest.Domain.Write.Users;
 using PracticalTest.Endpoint.Common.Errors;
+using PracticalTest.Endpoint.Validations;
 using PracticalTest.Infrastructure;
 using PracticalTest.Infrastructure.Read;
 using PracticalTest.Infrastructure.Read.Repositories;
@@ -50,12 +52,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 
 builder.Services.AddAuthorization();
+{
+    builder.Services.AddScoped<DbContextFactory<PracticalTestWriteDbContext>>();
+    builder.Services.AddScoped<DbContextFactory<PracticalTestReadDbContext>>();
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+    builder.Services.AddScoped<CreateCommentRequestValidator>();
+    builder.Services.AddScoped<IValidator<CreateCommentRequest>,CreateCommentRequestValidator>();
+
+}
 
 //Register
-builder.Services.AddScoped<DbContextFactory<PracticalTestWriteDbContext>>();
-builder.Services.AddScoped<DbContextFactory<PracticalTestReadDbContext>>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+
+
 
 builder.Services.AddMediator(
     Assembly.GetAssembly(typeof(PracticalTestWriteDbContext))
