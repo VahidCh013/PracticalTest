@@ -8,6 +8,7 @@ using PracticalTest.Domain.Read.BlogPosts;
 using PracticalTest.Domain.Write.Common;
 using PracticalTest.Domain.Write.Users;
 using PracticalTest.Endpoint.Common.Errors;
+using PracticalTest.Endpoint.Models;
 using PracticalTest.Endpoint.Payloads;
 using PracticalTest.Endpoint.Validations;
 using PracticalTest.Infrastructure.Blogs.Commands;
@@ -51,20 +52,10 @@ public class BlogController : ControllerBase
 
     [HttpPost("AddComment")]
     [Authorize]
-    public async Task<IActionResult> AddComment(CreateCommentRequest commentRequest,[FromServices] CreateCommentRequestValidator validator)
+    public async Task<IActionResult> AddComment(CreateCommentRequest commentRequest)
     {
-        var result = await validator.ValidateAsync(commentRequest);
-        if (!result.IsValid)
-        {
-            var modelState = new ModelStateDictionary();
-            foreach (var failure in result.Errors)
-            {
-                modelState.AddModelError(failure.PropertyName,failure.ErrorMessage);
-            }
-            return ValidationProblem(modelState);
-        }
-        var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        await _mediator.Send(new AddCommentCommand(commentRequest.Comment, userEmail, commentRequest.BlogpostId))
+       var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await _mediator.Send(new AddCommentCommand(commentRequest.Comment, userEmail, commentRequest.BlogPostId))
             .Match(r => new AddCommentPayload(r.Id, null)
                 , e => new AddCommentPayload(null, e.UserErrorFromMessageString()));
         return Ok();

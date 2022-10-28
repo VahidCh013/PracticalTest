@@ -1,7 +1,3 @@
-﻿namespace PracticalTest.Domain.Write.Users;
+﻿namespace PracticalTest.Endpoint.Models;
 
-public class CreateCommentRequest
-{
-    public string Comment { get; set; }
-    public long BlogpostId { get; set; }
-}
+public record CreateCommentRequest(string Comment, long BlogPostId);
