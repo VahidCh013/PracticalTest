@@ -8,6 +8,7 @@ using PracticalTest.Domain.Write.Common;
 using PracticalTest.Endpoint.Common.Errors;
 using PracticalTest.Endpoint.Payloads;
 using PracticalTest.Infrastructure.Blogs.Commands;
+using PracticalTest.Infrastructure.Blogs.Payloads;
 
 namespace PracticalTest.Endpoint.Controllers;
 
@@ -26,13 +27,15 @@ public class BlogController : ControllerBase
 
     [HttpPost("AddBlog")]
     [Authorize]
-    public async Task<AddBlogPayload> AddBlog(string name, string description, string content, string[] tags)
+    public async Task<AddBlogPayload> AddBlog(AddBlogRequest addBlogRequest)
     {
         var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        return await _mediator.Send(new AddBlogCommand(name, description, userEmail, content, tags.ToList()))
+        return await _mediator.Send(new AddBlogCommand(addBlogRequest.Name, addBlogRequest.Description, userEmail, addBlogRequest.Content, addBlogRequest.Tags.ToList()))
             .Match(r => new AddBlogPayload(r.id, null)
                 , e => new AddBlogPayload(null, e.UserErrorFromMessageString()));
     }
+
+    public record AddBlogRequest(string Name, string Description, string Content, string[] Tags);
 
     [HttpPost("UpdateBlogPost")]
     [Authorize]

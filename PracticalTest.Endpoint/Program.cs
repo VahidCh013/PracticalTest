@@ -2,6 +2,9 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CSharpFunctionalExtensions;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +15,10 @@ using PracticalTest.Domain.Write.Common.Mediator;
 using PracticalTest.Domain.Write.Users;
 using PracticalTest.Endpoint.Common.Errors;
 using PracticalTest.Infrastructure;
+using PracticalTest.Infrastructure.Blogs.Behaviors;
+using PracticalTest.Infrastructure.Blogs.Commands;
+using PracticalTest.Infrastructure.Blogs.Payloads;
+using PracticalTest.Infrastructure.Blogs.Validators;
 using PracticalTest.Infrastructure.Read;
 using PracticalTest.Infrastructure.Read.Repositories;
 using PracticalTest.Infrastructure.Repositories;
@@ -56,10 +63,14 @@ builder.Services.AddScoped<DbContextFactory<PracticalTestWriteDbContext>>();
 builder.Services.AddScoped<DbContextFactory<PracticalTestReadDbContext>>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
-
+builder.Services.AddValidatorsFromAssembly(typeof(PracticalTestWriteDbContext).Assembly);
 builder.Services.AddMediator(
     Assembly.GetAssembly(typeof(PracticalTestWriteDbContext))
     , Assembly.GetAssembly(typeof(PracticalTestTransferDbContext)));
+// builder.Services.AddScoped<
+//     IPipelineBehavior<AddBlogCommand, Result<AddBlogPayload>>,
+//     ValidateAddBlogCommandBehavior>();
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
 
 var app = builder.Build();

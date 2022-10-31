@@ -44,7 +44,7 @@ public class PracticalTestProblemDetailsFactory:ProblemDetailsFactory
         ModelStateDictionary modelStateDictionary, int? statusCode = null, string? title = null, string? type = null,
         string? detail = null, string? instance = null)
     {
-        throw new NotImplementedException();
+        return new ValidationProblemDetails(modelStateDictionary);
     }
 
     private void ApplyProblemDetailsDefaults(HttpContext httpContext, ProblemDetails problemDetails, int statusCode)
