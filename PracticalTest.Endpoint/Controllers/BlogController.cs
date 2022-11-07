@@ -31,7 +31,7 @@ public class BlogController : ControllerBase
     {
         var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         return await _mediator.Send(new AddBlogCommand(addBlogRequest.Name, addBlogRequest.Description, userEmail, addBlogRequest.Content, addBlogRequest.Tags.ToList()))
-            .Match(r => new AddBlogPayload(r.id, null)
+            .Match(r => new AddBlogPayload(r.Id)
                 , e => new AddBlogPayload(null, e.UserErrorFromMessageString()));
     }
 

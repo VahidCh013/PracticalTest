@@ -2,6 +2,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PracticalTest.Domain.Write.Common.Mediator;
 
 namespace PracticalTest.Infrastructure.Blogs.Behaviors;
 
@@ -31,9 +32,11 @@ public class LoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
         var errors = validationResult.Errors
             .Select(validationFailure => validationFailure.ErrorMessage).ToList();
         _logger.LogInformation($"Handled {typeof(TResponse).Name}"); 
+        var test1=next.GetType().TryFindField("errors");
+var test=errors.ToArray();
 
-        return (dynamic)errors;
-            
-   
+return Result.Failure((dynamic)"test");
+
+
     }
 }
