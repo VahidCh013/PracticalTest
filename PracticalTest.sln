@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticalTest.Transformatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticalTest.Common", "PracticalTest.Common\PracticalTest.Common.csproj", "{8789D014-232E-4D67-AB3B-C074137D5D93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticalTest.Write.Tests.Integration", "PracticalTest.Write.Tests.Integration\PracticalTest.Write.Tests.Integration.csproj", "{ACA9A4E8-5E30-49BA-A00B-23DDE1B6C053}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,10 @@ Global
 		{8789D014-232E-4D67-AB3B-C074137D5D93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8789D014-232E-4D67-AB3B-C074137D5D93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8789D014-232E-4D67-AB3B-C074137D5D93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACA9A4E8-5E30-49BA-A00B-23DDE1B6C053}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA9A4E8-5E30-49BA-A00B-23DDE1B6C053}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA9A4E8-5E30-49BA-A00B-23DDE1B6C053}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA9A4E8-5E30-49BA-A00B-23DDE1B6C053}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9B884ABA-3F9B-4F16-BC8F-CFE8CD21AC62} = {BB7210A5-274C-40DF-A007-987BA1E80EF3}
@@ -84,5 +90,6 @@ Global
 		{FE526EAC-C701-4D76-A372-AA3E6F704873} = {7F2DB389-29C7-4A99-8B68-FD2F42D03497}
 		{BFC6687A-4D74-431E-BE01-B41F5ADB7026} = {FE526EAC-C701-4D76-A372-AA3E6F704873}
 		{8789D014-232E-4D67-AB3B-C074137D5D93} = {7F2DB389-29C7-4A99-8B68-FD2F42D03497}
+		{ACA9A4E8-5E30-49BA-A00B-23DDE1B6C053} = {9CCA0487-2663-462B-BBCE-0BD094E13B06}
 	EndGlobalSection
 EndGlobal

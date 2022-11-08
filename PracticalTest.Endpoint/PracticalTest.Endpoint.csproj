@@ -31,8 +31,4 @@
       <None Remove="Docs\readme.md" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Common" />
-    </ItemGroup>
-
 </Project>
