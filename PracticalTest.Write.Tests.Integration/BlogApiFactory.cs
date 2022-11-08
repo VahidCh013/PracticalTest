@@ -1,14 +1,17 @@
-﻿using DotNet.Testcontainers.Builders;
+﻿using System.Data.Common;
+using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Npgsql;
 using PracticalTest.Endpoint.Common;
 using PracticalTest.Infrastructure;
+using Respawn;
 using Xunit;
 
 namespace PracticalTest.Write.Tests.Integration;
@@ -22,25 +25,52 @@ public class BlogApiFactory : WebApplicationFactory<IIntegrationTest>,IAsyncLife
         _container = new TestcontainersBuilder<MsSqlTestcontainer>()
             .WithDatabase(new MsSqlTestcontainerConfiguration
             {
-                Database = "test_db",
-                Username = "sa",
-                Password = "Dock#rEx@mple"
+                Password = "P@ssw0rd",
             })
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithCleanUp(true)
             .Build();
+    }
+
+    private DbConnection _dbConnection = default!;
+    private Respawner _respawner = default!;
+    public HttpClient HttpClient { get; set; }=default!;
+
+    public async Task ResetDatabase()
+    {
+        await _respawner.ResetAsync(_dbConnection);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureTestServices(services =>
         {
-            services.RemoveAll(typeof(PracticalTestWriteDbContext));
+            services.RemoveDbContext<PracticalTestWriteDbContext>();
             services.AddDbContextFactory<PracticalTestWriteDbContext>(opt =>
                 opt.UseSqlServer(_container.ConnectionString));
         });
     }
 
-    public async Task InitializeAsync() => await _container.StartAsync();
+    public async Task InitializeAsync()
+    {
+        await _container.StartAsync();
+        _dbConnection = new SqlConnection(_container.ConnectionString);
+        HttpClient = CreateClient();
+        await InitializeRespawner();
+    }
 
-    public new async Task DisposeAsync() => await _container.DisposeAsync();
+    private async Task InitializeRespawner()
+    {
+        await _dbConnection.OpenAsync();
+        _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions()
+        {
+            DbAdapter = DbAdapter.SqlServer,
+            SchemasToInclude = new[] { "public" }
+        });
+    }
+
+    public new async Task DisposeAsync()
+    {
+        await _container.StopAsync();
+    }
 }

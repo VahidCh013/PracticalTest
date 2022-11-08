@@ -1,22 +1,23 @@
-﻿using FluentAssertions;
+﻿using System.Runtime.CompilerServices;
+using FluentAssertions;
 using Newtonsoft.Json;
-using PracticalTest.Endpoint.Common;
-using PracticalTest.Infrastructure;
 using PracticalTest.Write.Tests.Integration.Common;
 using Xunit;
 
 namespace PracticalTest.Write.Tests.Integration.Authenthication;
 
-public class AuthenticateControllerTest:IClassFixture<IntegrationTestFactory<IIntegrationTest,PracticalTestWriteDbContext>>
+[Collection("Test collection")]
+public class AuthenticateControllerTest:IAsyncLifetime
 {
-    
-    private readonly IntegrationTestFactory<IIntegrationTest, PracticalTestWriteDbContext> _factory;
 
-    public AuthenticateControllerTest(IntegrationTestFactory<IIntegrationTest, PracticalTestWriteDbContext> factory)
+    private readonly BlogApiFactory _factory;
+    private readonly Func<Task> _resetDatabase;
+
+    public AuthenticateControllerTest(BlogApiFactory factory)
     {
         _factory = factory;
+        _resetDatabase = factory.ResetDatabase;
     }
-
 
     [Fact]
     public async Task Authenticate_Success()
@@ -31,11 +32,13 @@ public class AuthenticateControllerTest:IClassFixture<IntegrationTestFactory<IIn
         var json = JsonConvert.SerializeObject(credential);
         var httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-        var client = _factory.CreateClient();
+        var client = _factory.HttpClient;
         var response = await client.PostAsync("/Auth/AccessToken",httpContent);
         var token =JsonConvert.DeserializeObject<Token>(await response.Content.ReadAsStringAsync());
         token.AccessToken.Should().NotBeNull();
         response.EnsureSuccessStatusCode();
 
     }
+    public Task InitializeAsync()=>Task.CompletedTask;
+    public Task DisposeAsync() => _resetDatabase();
 }
