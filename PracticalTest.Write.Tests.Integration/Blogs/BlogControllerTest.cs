@@ -14,7 +14,7 @@ public class BlogControllerTest:IAsyncLifetime
     public BlogControllerTest(BlogApiFactory factory)
     {
         _factory = factory;
-        _resetDatabase = factory.ResetDatabase;
+        _resetDatabase = factory.ResetDatabaseAsync;
 
     }
 

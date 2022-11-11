@@ -25,7 +25,7 @@ public class BlogApiFactory : WebApplicationFactory<IIntegrationTest>,IAsyncLife
         _container = new TestcontainersBuilder<MsSqlTestcontainer>()
             .WithDatabase(new MsSqlTestcontainerConfiguration
             {
-                Password = "P@ssw0rd",
+                Password = "P@ssw0rd"
             })
             .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithCleanUp(true)
@@ -34,9 +34,9 @@ public class BlogApiFactory : WebApplicationFactory<IIntegrationTest>,IAsyncLife
 
     private DbConnection _dbConnection = default!;
     private Respawner _respawner = default!;
-    public HttpClient HttpClient { get; set; }=default!;
+    public HttpClient HttpClient { get; private set; }=default!;
 
-    public async Task ResetDatabase()
+    public async Task ResetDatabaseAsync()
     {
         await _respawner.ResetAsync(_dbConnection);
     }
@@ -65,7 +65,7 @@ public class BlogApiFactory : WebApplicationFactory<IIntegrationTest>,IAsyncLife
         _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions()
         {
             DbAdapter = DbAdapter.SqlServer,
-            SchemasToInclude = new[] { "public" }
+            SchemasToInclude = new[] { "public","dbo" }
         });
     }
 

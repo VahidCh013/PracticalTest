@@ -16,7 +16,7 @@ public class AuthenticateControllerTest:IAsyncLifetime
     public AuthenticateControllerTest(BlogApiFactory factory)
     {
         _factory = factory;
-        _resetDatabase = factory.ResetDatabase;
+        _resetDatabase = factory.ResetDatabaseAsync;
     }
 
     [Fact]
