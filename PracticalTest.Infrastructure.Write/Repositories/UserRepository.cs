@@ -35,6 +35,7 @@ public class UserRepository:IUserRepository
         foreach (var t in bytes)
         {
             builder.Append(t.ToString("x2"));
+            //Here is a simple test
         }  
         return builder.ToString();
     } 
